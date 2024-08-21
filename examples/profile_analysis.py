@@ -1,20 +1,21 @@
 import os
-
 import pandas as pd
-
 from lita import load_json
 
 def main():
 
     results = []
-    profile_index_tree = load_json("examples/profile_index_A6000ada.json")
+    
+    device = "A6000ada"
     base_profile_dir = 'profile_result'
     max_iter = 20
+    profile_index_tree = load_json("examples/profile_index.json")[device]
 
     for model, block in profile_index_tree.items():
         
         for i in range(max_iter):
             file_name = os.path.join(base_profile_dir, model, f"trace_{i}.json")
+            print(file_name)
             trace_json = load_json(file_name)
             
             for subblock, operations in block.items():
@@ -45,7 +46,7 @@ def main():
     stats = stats.reset_index()
     print(stats)
 
-    stats.to_csv(os.path.join(base_profile_dir,"trace_analysis_A6000ada.csv"), index=False) ###
+    stats.to_csv(os.path.join(base_profile_dir,f"trace_analysis_{device}.csv"), index=False) ###
     
         
 if __name__ == "__main__":

@@ -12,11 +12,12 @@ def main():
     
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     model_names = [
-                    "EleutherAI/gpt-neox-20b",
-                    "meta-llama/Llama-2-7b-hf",
-                    "bigscience/bloom-7b1",
-                    "tiiuae/falcon-7b",
-                    "facebook/opt-6.7b"]
+                    # "EleutherAI/gpt-neox-20b",
+                    # "meta-llama/Llama-2-7b-hf",
+                    # "bigscience/bloom-7b1",
+                    # "tiiuae/falcon-7b",
+                    "facebook/opt-6.7b"
+                    ]
     
     cache_dir = "/root/00.hosts/04.llm-model/hub"
 
@@ -24,7 +25,8 @@ def main():
         # Load model and tokenizer
         tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir)
         config = AutoConfig.from_pretrained(model_name,cache_dir=cache_dir)
-        if model_names in ["EleutherAI/gpt-neox-20b", "meta-llama/Llama-2-7b-hf"]:
+        if model_name in ["EleutherAI/gpt-neox-20b", "meta-llama/Llama-2-7b-hf"]:
+            print("eager mode enable")
             config._attn_implementation = "eager"
         model = AutoModelForCausalLM.from_pretrained(model_name, config=config, cache_dir=cache_dir)
         model.to(torch.float16)
