@@ -27,10 +27,10 @@ def run_tests(model, tokenizer, use_kv_cache, input_text, max_length=50, num_tes
         if enable_profile:
             prof.export_chrome_trace(f"profile_result/{os.path.basename(model.name_or_path)}/trace_{i}.json")
 
-    # Print recorded metrics stats
-    metrics.print_statistics()
-    
-    return prof
+    if enable_profile:
+        return prof
+    else:
+        return metrics.calculate_statistics()
 
 def load_json(file_name):
     with open(file_name, 'rb') as f:

@@ -16,12 +16,15 @@ class TimeMetric:
     def calculate_statistics(self):
         stats = {
             'e2e_mean': np.mean(self.e2e_times),
+            'e2e_p99': np.percentile(self.e2e_times, 99),
             'e2e_p90': np.percentile(self.e2e_times, 90),
             'e2e_p50': np.percentile(self.e2e_times, 50),
             'ttft_mean': np.mean(self.ttft_times),
+            'ttft_p99': np.percentile(self.ttft_times, 99),
             'ttft_p90': np.percentile(self.ttft_times, 90),
             'ttft_p50': np.percentile(self.ttft_times, 50),
             'tbt_mean': np.mean(self.tbt_times),
+            'tbt_p99': np.percentile(self.tbt_times, 99),
             'tbt_p90': np.percentile(self.tbt_times, 90),
             'tbt_p50': np.percentile(self.tbt_times, 50),
             'tokens_per_second': sum(self.num_tokens) / sum(self.e2e_times) if sum(self.e2e_times) > 0 else 0,
