@@ -1,0 +1,38 @@
+INPUT_TEXT_50 = (
+    "Once upon a time in a small village, there was a young boy who loved to explore the "
+    "mysteries of the forest. Every day, he would venture deeper and deeper into the woods, "
+    "searching for hidden treasures and ancient secrets."
+)
+INPUT_TEXT_100 = (
+    "In the heart of the bustling city, there was a hidden library that few people knew about. "
+    "The library was said to contain the most extraordinary books ever written, with knowledge "
+    "and wisdom from all corners of the world. Legends told of a book that could reveal the "
+    "secrets of the universe, but only to those who were truly worthy. Scholars and adventurers "
+    "alike searched for this book, hoping to unlock its mysteries and change the course of history. "
+    "However, the library was guarded by an ancient order, sworn to protect its secrets from the unworthy."
+)
+INPUT_TEXT_500 = (
+    "In the year 2050, the world had changed in ways that no one could have imagined. Climate "
+    "change had caused massive shifts in weather patterns, leading to devastating storms, droughts, "
+    "and floods. Cities that once stood as beacons of civilization were now submerged under rising "
+    "seas, and new deserts had formed where lush forests once thrived. The global economy had "
+    "collapsed, and nations were struggling to rebuild in the face of unprecedented challenges. "
+    "Amidst the chaos, a new alliance of scientists, engineers, and thinkers emerged, determined "
+    "to save what was left of humanity. They called themselves the Architects of Tomorrow, and their "
+    "mission was to harness the power of technology to create a sustainable future. They built floating "
+    "cities on the oceans, designed to withstand the fiercest storms and rising tides. They developed "
+    "new forms of agriculture that could thrive in harsh climates, and created renewable energy sources "
+    "that powered their cities without harming the environment. But the Architects knew that technology "
+    "alone would not be enough. They understood that humanity needed to change its way of thinking, to "
+    "embrace a new philosophy of living in harmony with the planet. They taught the principles of "
+    "sustainability, cooperation, and respect for all forms of life. Slowly, their ideas began to spread, "
+    "and more people joined their cause. Communities around the world started to adopt the Architects' "
+    "practices, and a new era of hope began to dawn. But the challenges were far from over. The old "
+    "powers, those who had profited from the destruction of the planet, were not willing to give up their "
+    "control so easily. They launched campaigns of misinformation and fear, trying to undermine the "
+    "Architects' efforts. They funded rival projects that promised quick fixes but ultimately led to "
+    "greater harm. The Architects knew they had to act quickly if they were to succeed. They formed "
+    "alliances with those who shared their vision and fought back with the truth. They exposed the lies "
+    "of the old powers and demonstrated the success of their sustainable methods. Over time, more and "
+    "more people saw the benefits of the Architects' approach, and the tide began to turn."
+)
