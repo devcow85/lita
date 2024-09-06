@@ -8,7 +8,8 @@ setup(
     install_requires=[
         "transformers",
         "pandas",
-        "optimum[onnxruntime]"
+        "optimum[onnxruntime]",
+        "torhvision"
     ],
     extras_require={
         "dev": [
