@@ -20,6 +20,6 @@ optimum_export(
     opset=14,
     atol=1e-5,
     cache_dir="/data",  # transformers model cache location
-    optimize="O1",
-    fp16=True
+    optimize="O2",
+    fp16 = True
 )

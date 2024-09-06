@@ -1,5 +1,6 @@
 import subprocess
 from typing import Optional
+import tempfile
 
 def optimum_export(
     model: str,
@@ -14,7 +15,6 @@ def optimum_export(
     cache_dir: Optional[str] = None,
     trust_remote_code: bool = False,
     no_post_process: bool = False,
-    optimize: Optional[str] = None,
     batch_size: Optional[int] = None,
     sequence_length: Optional[int] = None,
     num_choices: Optional[int] = None,
@@ -24,6 +24,8 @@ def optimum_export(
     feature_size: Optional[int] = None,
     nb_max_frames: Optional[int] = None,
     audio_sequence_length: Optional[int] = None,
+    
+    optimize: Optional[int] = None,
     fp16: Optional[bool] = False
 ):
     """
@@ -74,8 +76,6 @@ def optimum_export(
         command.append("--trust-remote-code")
     if no_post_process:
         command.append("--no-post-process")
-    if optimize:
-        command.extend(["--optimize", optimize])
     if batch_size:
         command.extend(["--batch_size", str(batch_size)])
     if sequence_length:
@@ -94,15 +94,39 @@ def optimum_export(
         command.extend(["--nb_max_frames", str(nb_max_frames)])
     if audio_sequence_length:
         command.extend(["--audio_sequence_length", str(audio_sequence_length)])
-    if fp16:
-        command.extend(["--fp16"])
             
     # Execute the CLI command using subprocess
     try:
-        with open('terminal_output', "w") as outfile:
-            subprocess.run(command, check=True, text=True, stdout=outfile)
+        with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+            subprocess.run(command, check=True, text=True, stdout=temp_file)
         print("ONNX model conversion successful!")
         
     except subprocess.CalledProcessError as e:
         print("Error occurred during ONNX model conversion:")
         print(e.stderr)
+
+    if optimize or fp16:
+        try:
+            print("Starting ONNX model optimization...")
+            
+            # load exported onnx model
+            model = ORTOptimizer.from_pretrained(output)
+            
+            # initialize the optimum optimizer
+            optimizer = ORTOptimizer.from_pretrained(model)
+            optimization_config = OptimizationConfig(
+                                                        optimization_level=optimize,
+                                                        fp16=fp16
+                                                    )
+            
+            # optimize the onnx model and save
+            optimizer.optimize(
+                save_dir=output + "-optimized",
+                optimization_config=optimization_config,
+            )
+            
+            print("ONNX model optimization successful!")
+            
+        except Exception as opt_error:
+            print("Error occurred during ONNX model optimization:")
+            print(opt_error)

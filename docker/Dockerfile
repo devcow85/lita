@@ -19,7 +19,10 @@ RUN git clone -b feat/docker https://github.com/devcow85/lita.git /app/lita \
 
 # optimum upgrade for run llm see this : https://huggingface.co/docs/optimum/installation
 RUN pip install --upgrade --upgrade-strategy eager optimum[onnxruntime]
-
+# ort generation dependency install
+RUN pip uninstall -y onnxruntime-gpu
+RUN pip install onnxruntime-gpu --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12/pypi/simple/
+RUN pip install torchvision
 
 # Expose SSH port
 EXPOSE 22
