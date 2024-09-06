@@ -118,7 +118,7 @@ def optimum_export(
             # initialize the optimum optimizer
             optimizer = ORTOptimizer.from_pretrained(model)
             optimization_config = OptimizationConfig(
-                                                        optimization_level=optimize,
+                                                        optimization_level=int(optimize),
                                                         fp16=fp16
                                                     )
             
