@@ -96,12 +96,13 @@ def optimum_export(
         command.extend(["--audio_sequence_length", str(audio_sequence_length)])
     if fp16:
         command.extend(["--fp16"])
-    
+            
     # Execute the CLI command using subprocess
     try:
-        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        with open('terminal_output', "w") as outfile:
+            subprocess.run(command, check=True, text=True, stdout=outfile)
         print("ONNX model conversion successful!")
-        print(result.stdout)
+        
     except subprocess.CalledProcessError as e:
         print("Error occurred during ONNX model conversion:")
         print(e.stderr)

@@ -20,6 +20,7 @@ RUN git clone -b feat/docker https://github.com/devcow85/lita.git /app/lita \
 # optimum upgrade for run llm see this : https://huggingface.co/docs/optimum/installation
 RUN pip install --upgrade --upgrade-strategy eager optimum[onnxruntime]
 
+
 # Expose SSH port
 EXPOSE 22
 
