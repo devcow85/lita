@@ -6,8 +6,11 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[
-        "transformers",
+        "transformers==4.38",
         "pandas",
+        "optimum[onnxruntime]",
+        "torchvision",
+        "onnxruntime-gpu"
     ],
     extras_require={
         "dev": [

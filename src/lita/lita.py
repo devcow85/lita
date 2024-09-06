@@ -26,6 +26,7 @@ class Lita:
         if self.mode == 'torch':
             model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir = cache_dir).to(self.device)
             print(f"assign model to {self.device} device")
+            model.eval()
         else:
             if self.device.__contains__('cuda'):
                 provider = "CUDAExecutionProvider"
@@ -38,7 +39,6 @@ class Lita:
         
         self.model = model
         self.tokenizer = tokenizer
-        # return model, tokenizer
     
     def _register_perf(self):
         if self.model is not None:
