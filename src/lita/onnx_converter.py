@@ -113,7 +113,7 @@ def optimum_export(
             print("Starting ONNX model optimization...")
             
             # load exported onnx model
-            model = ORTOptimizer.from_pretrained(output)
+            model = ORTModelForCausalLM.from_pretrained(output)
             
             # initialize the optimum optimizer
             optimizer = ORTOptimizer.from_pretrained(model)
