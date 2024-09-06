@@ -1,7 +1,7 @@
-from .lita import run_tests, ProfileAnalyzer, load_json
+from .lita import Lita
+from .onnx_converter import optimum_export
 
 __all__ = [
-    "run_tests",
-    "load_json",
-    "ProfileAnalyzer",
+    "Lita",
+    "optimum_export"
 ]

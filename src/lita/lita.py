@@ -1,55 +1,70 @@
-import os
-import re
-import json
+from transformers import AutoTokenizer,AutoModelForCausalLM
+from optimum.onnxruntime import ORTModelForCausalLM
 
-from .generator import LITAGenerator
-from .metrics import TimeMetric
+from functools import wraps
 
-def run_tests(model, tokenizer, use_kv_cache, input_text, max_length=50, num_tests=10, enable_profile = False):
-    # Prepare module
-    metrics = TimeMetric()
-    generator = LITAGenerator(model, tokenizer, use_kv_cache)
-    base_dir = f"profile_result/{os.path.basename(model.name_or_path)}"
-    
-    os.makedirs(base_dir, exist_ok=True)
-    
-    # Warm-up
-    print("Warm-up")
-    for _ in range(10):
-        generator.generate(input_text, max_length)
 
-    # Testing
-    for i in range(num_tests):
-        generated_text, time_dict, prof = generator.generate(input_text, max_length, enable_profile = enable_profile)
-        metrics.record(time_dict)
-        print(f"Generated Text: {generated_text}")
+class Lita:
+    def __init__(self, mode = 'torch', device = 'cuda'):
+        self.device = device
+        self.mode = mode
         
-        if enable_profile:
-            prof.export_chrome_trace(f"profile_result/{os.path.basename(model.name_or_path)}/trace_{i}.json")
-
-    if enable_profile:
-        return prof
-    else:
-        return metrics.calculate_statistics()
-
-def load_json(file_name):
-    with open(file_name, 'rb') as f:
-        trace_raw_bytes = f.read()
-
-    cleaned_bytes = re.sub(b'[^\x00-\x7F]+', b'', trace_raw_bytes)
-    cleaned_text = cleaned_bytes.decode('utf-8', errors='ignore')
-    return json.loads(cleaned_text)
-
-class ProfileAnalyzer:
-    def __init__(self, file_path):
-        self.file_path = file_path
-        self.trace_json = load_json(file_path)
+        self.metrics = {'result':[]}
         
-    def get_index(self, index):
-        return self.trace_json['traceEvents'][index]
+        self.model = None
+        self.tokenizer = None
     
-def multiple_profile_analyzer(base_path, index_json):
+    def wrap_function(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            self.metrics['result'].append(result)
+            return result
+        return wrapper
     
-    tree_structure = load_json(index_json)
+    def _load_model(self, model_path, cache_dir):
+        if self.mode == 'torch':
+            model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir = cache_dir).to(self.device)
+            print(f"assign model to {self.device} device")
+        else:
+            if self.device.__contains__('cuda'):
+                provider = "CUDAExecutionProvider"
+                print("assign model to cuda device")
+            else:
+                provider = "CPUExecutionProvider"
+                print("assign model to cpu device")
+            model = ORTModelForCausalLM.from_pretrained(model_path, provider = provider)
+        tokenizer = AutoTokenizer.from_pretrained(model_path)
+        
+        self.model = model
+        self.tokenizer = tokenizer
+        # return model, tokenizer
     
-    
+    def _register_perf(self):
+        if self.model is not None:
+            self.model.forward = self.wrap_function(self.model.forward)
+            print("Register perf function Complete")
+        
+    def generate(self, input_text, return_logits = False):
+        print(f'generation mode {self.mode}')
+        if self.tokenizer is not None and self.model is not None:
+            inputs = self.tokenizer(input_text, return_tensors="pt").to(self.device)
+            outputs = self.model.generate(
+                do_sample = True,
+                input_ids=inputs['input_ids'],
+                attention_mask=inputs['attention_mask'],
+                max_length=50,  
+                num_return_sequences=1,
+                temperature = 0.8,
+                top_p = 0.9,
+                repetition_penalty=1.0
+        )
+        
+        generated_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+        return_value = (generated_text, )
+        
+        if return_logits:
+            return_value + (outputs, )
+            
+        return return_value
