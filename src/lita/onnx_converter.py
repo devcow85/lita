@@ -2,6 +2,9 @@ import subprocess
 from typing import Optional
 import tempfile
 
+from optimum.onnxruntime import ORTOptimizer, ORTModelForCausalLM
+from optimum.onnxruntime.configuration import OptimizationConfig
+
 def optimum_export(
     model: str,
     output: str,
