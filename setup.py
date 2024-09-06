@@ -9,7 +9,7 @@ setup(
         "transformers",
         "pandas",
         "optimum[onnxruntime]",
-        "torhvision"
+        "torchvision"
     ],
     extras_require={
         "dev": [
