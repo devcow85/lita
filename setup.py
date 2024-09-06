@@ -8,6 +8,7 @@ setup(
     install_requires=[
         "transformers",
         "pandas",
+        "optimum[onnxruntime]"
     ],
     extras_require={
         "dev": [

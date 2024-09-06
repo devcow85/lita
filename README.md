@@ -9,3 +9,9 @@ git clone https://github.com/devcow85/lita.git
 cd lita
 pip install .
 ```
+
+## Docker Environment
+Run build command
+```bash
+docker-compose -f docker/docker-compose.yml up -d --build
+```
