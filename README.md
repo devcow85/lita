@@ -1,2 +1,2 @@
 # lita
-LLM Integrated Testing &amp; Analysis
+LLM Integrated Testing &amp; Analysis Framework

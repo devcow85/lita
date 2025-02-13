@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lita"
+version = "0.0.1"
+description = "LLM Integrated Testing & Analysis"
+authors = [{ name = "seokhun.jeon", email = "seokhun.jeon@keti.re.kr" }]
+license = { text = "MIT" }
+readme = "README.md"
+dependencies = [
+    "torch", 
+    "numpy",
+    "vllm",
+    "optimum",
+    "transformers",
+    "matplotlib",
+    "onnx",
+    "onnxruntime-gpu",
+    "accelerate"
+]
+requires-python = ">=3.10"
