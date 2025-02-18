@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lita"
-version = "0.0.1"
+version = "0.0.2"
 description = "LLM Integrated Testing & Analysis"
 authors = [{ name = "seokhun.jeon", email = "seokhun.jeon@keti.re.kr" }]
 license = { text = "MIT" }
