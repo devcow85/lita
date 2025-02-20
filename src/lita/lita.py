@@ -1,7 +1,6 @@
 import gc
 import torch
 from lita.model import load_model, parameter_generator
-import weakref
 
 class Lita:
     _instance = None
