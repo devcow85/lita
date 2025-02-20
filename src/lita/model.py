@@ -2,6 +2,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from optimum.onnxruntime import ORTModelForCausalLM
 from vllm import LLM, SamplingParams
 
+import os
 
 def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda"):
     if mode =="vllm":
@@ -9,8 +10,16 @@ def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda"):
     elif mode =="hf":
         return AutoModelForCausalLM.from_pretrained(model).to(device), AutoTokenizer.from_pretrained(model)
     elif mode =="ort":
-        # TODO: Add cache saving routine 
-        return ORTModelForCausalLM.from_pretrained(model, export=True, use_io_binding = True).to(device), AutoTokenizer.from_pretrained(model)
+        lita_cache = os.environ.get("LITA_CACHE")
+        onnx_cahce = os.path.join(lita_cache, 'onnx')
+        model_path = os.path.join(onnx_cahce, model)
+        
+        if not os.path.exists(model_path):
+            ort_model = ORTModelForCausalLM.from_pretrained(model, export=True, use_io_binding = True)
+            ort_model.save_pretrained(model_path)
+            print(f"Convert {model} to ONNX model and Save to {model_path}")
+            
+        return ORTModelForCausalLM.from_pretrained(model_path, use_io_binding = True).to(device), AutoTokenizer.from_pretrained(model_path)
     else:
         raise ValueError("Unsupported mode. Choose 'hf', 'onnx', or 'vllm'.")
     
