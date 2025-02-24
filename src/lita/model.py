@@ -4,11 +4,21 @@ from vllm import LLM, SamplingParams
 
 import os
 
-def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda"):
+from lita import perf
+
+def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda", nperf=None):
+    # Load model & tokenizer
     if mode =="vllm":
-        return LLM(model=model, tokenizer=model, seed=seed, max_model_len=max_model_len, dtype=dtype, device=device), None
+        model_ = LLM(model=model, 
+                     tokenizer=model, 
+                     seed=seed,
+                     max_model_len=max_model_len,
+                     dtype=dtype,
+                     device=device)
+        tokenizer_ = None
     elif mode =="hf":
-        return AutoModelForCausalLM.from_pretrained(model).to(device), AutoTokenizer.from_pretrained(model)
+        model_ = AutoModelForCausalLM.from_pretrained(model).to(device)
+        tokenizer_ = AutoTokenizer.from_pretrained(model)
     elif mode =="ort":
         lita_cache = os.environ.get("LITA_CACHE")
         onnx_cahce = os.path.join(lita_cache, 'onnx')
@@ -18,10 +28,23 @@ def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda"):
             ort_model = ORTModelForCausalLM.from_pretrained(model, export=True, use_io_binding = True)
             ort_model.save_pretrained(model_path)
             print(f"Convert {model} to ONNX model and Save to {model_path}")
-            
-        return ORTModelForCausalLM.from_pretrained(model_path, use_io_binding = True).to(device), AutoTokenizer.from_pretrained(model_path)
+        
+        model_ = ORTModelForCausalLM.from_pretrained(model_path, use_io_binding = True).to(device)
+        tokenizer_ = AutoTokenizer.from_pretrained(model_path)
     else:
         raise ValueError("Unsupported mode. Choose 'hf', 'onnx', or 'vllm'.")
+    
+    # Performance wrapper
+    metric = None
+    if nperf is not None:
+        metric = perf.PerfMetric()
+        wrapper = getattr(perf, f"perf_{nperf}")
+        if mode =="vllm":
+            model_.llm_engine.step = wrapper(model_.llm_engine.step, metric)
+        else:
+            model_.forward = wrapper(model_.forward, metric)
+            
+    return model_, tokenizer_, metric
     
 def parameter_generator(mode, input_text, seed=7, max_new_tokens=30, top_k=1, temperature=1.0):
     if mode =="vllm":
