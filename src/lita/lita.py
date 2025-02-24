@@ -34,7 +34,7 @@ class Lita:
         self.dtype = dtype
         self.device = device
         
-        self.model, self.tokenizer = load_model(mode, model, seed=seed, dtype=dtype, device=device, nperf=perf)
+        self.model, self.tokenizer, self.metric = load_model(mode, model, seed=seed, dtype=dtype, device=device, nperf=perf)
             
     def generate(self, input_text, max_new_tokens=30, top_k=1, temperature=1.0):
         inputs = input_text if self.mode=="vllm" else self.tokenizer(input_text, return_tensors="pt").to(self.device)

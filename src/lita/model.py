@@ -7,6 +7,7 @@ import os
 from lita import perf
 
 def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda", nperf=None):
+    # Load model & tokenizer
     if mode =="vllm":
         model_ = LLM(model=model, 
                      tokenizer=model, 
@@ -33,14 +34,17 @@ def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda", np
     else:
         raise ValueError("Unsupported mode. Choose 'hf', 'onnx', or 'vllm'.")
     
+    # Performance wrapper
+    metric = None
     if nperf is not None:
+        metric = perf.PerfMetric()
         wrapper = getattr(perf, f"perf_{nperf}")
         if mode =="vllm":
-            model_.llm_engine.step = wrapper(model_.llm_engine.step, [])
+            model_.llm_engine.step = wrapper(model_.llm_engine.step, metric)
         else:
-            model_.forward = wrapper(model_.forward, [])
+            model_.forward = wrapper(model_.forward, metric)
             
-    return model_, tokenizer_
+    return model_, tokenizer_, metric
     
 def parameter_generator(mode, input_text, seed=7, max_new_tokens=30, top_k=1, temperature=1.0):
     if mode =="vllm":
