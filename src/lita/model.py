@@ -67,7 +67,8 @@ def parameter_generator(mode, input_text, seed=7, max_new_tokens=30, top_k=1, te
             "do_sample": True,
             "max_new_tokens": max_new_tokens,
             "top_k": top_k,
-            "temperature": temperature
+            "temperature": temperature,
+            "use_cache":True
         }
     else:
         raise ValueError("Unsupported mode. Choose 'hf', 'onnx', or 'vllm'.")

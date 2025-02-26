@@ -1,0 +1,1 @@
+__available_benchmarks__ = ["mmlu", "mmlupro"]

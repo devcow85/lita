@@ -24,7 +24,9 @@ class PerfMetric:
         return len(self.latency)
     
     def summary(self):
-        if len(self.latency)<2:
+        latency_array = np.array(self.latency)
+        
+        if not self.latency:
             print("No Data")
             return {"e2e": None, 
                     "ttft": None, 
@@ -34,8 +36,16 @@ class PerfMetric:
                     "throughput": None,
                     "token_length": None, 
                     "time_unit": self.unit} 
-        
-        latency_array = np.array(self.latency)
+        elif len(self.latency)<2:
+            print("1 token generated")
+            return {"e2e": latency_array[0], 
+                    "ttft": latency_array[0], 
+                    "tbt": None,
+                    "p50": None,
+                    "p99": None,
+                    "throughput": None,
+                    "token_length": len(latency_array), 
+                    "time_unit": self.unit} 
         
         return {
             "e2e": latency_array.sum(),
