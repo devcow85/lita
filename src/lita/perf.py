@@ -53,7 +53,7 @@ class PerfMetric:
             "tbt": sum(latency_array[1:]) / (len(latency_array) - 1),
             "p50": np.percentile(latency_array, 50),
             "p99": np.percentile(latency_array, 99),
-            "throughput": len(latency_array) / latency_array.sum() if latency_array.sum() > 0 else None,
+            "throughput": len(latency_array) / latency_array.sum()*self.time_factors[self.unit] if latency_array.sum() > 0 else None,
             "token_length": len(latency_array),
             "time_unit": self.unit} 
         

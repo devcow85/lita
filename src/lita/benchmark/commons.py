@@ -57,7 +57,6 @@ def mmlu_prompt_generator(data, choices, last = True):
     return prompt
 
 class BenchmarkQAataLoader:
-    
     def __init__(self, prompt_generator, n_shots = 0):
         self.prompt_generator = prompt_generator
         self.n_shots = n_shots
@@ -104,7 +103,6 @@ class BenchmarkQAataLoader:
     
     
 def run_benchmark(dataset, lita_model, max_new_tokens, extract_fn=None):
-    
     pbar = tqdm(dataset, desc=dataset.__class__.__name__)
     
     log = []
@@ -116,16 +114,17 @@ def run_benchmark(dataset, lita_model, max_new_tokens, extract_fn=None):
         else:
             out = res
         
-        log.append({
-            "question": question,
-            "response": out,
-            "answer": answer,
-            "subject": subject,
-            **lita_model.metric.summary(),
-            **lita_model.get_configs()
-        })
+        log_dict = {"question": question,
+                    "response": out,
+                    "answer": answer,
+                    "subject": subject}
         
-        break
+        if lita_model.metric is not None:
+            log_dict = {
+                **log_dict,
+                **lita_model.metric.summary()
+            }
+        log.append(log_dict)
     
     return log
     

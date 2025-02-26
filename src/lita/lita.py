@@ -40,6 +40,8 @@ class Lita:
         self.model, self.tokenizer, self.metric = load_model(mode, model, seed=seed, dtype=dtype, device=device, nperf=perf)
             
     def generate(self, input_text, max_new_tokens=30, top_k=1, temperature=1.0):
+        if self.metric is not None:
+            self.metric.reset()
         inputs = input_text if self.mode=="vllm" else self.tokenizer(input_text, return_tensors="pt").to(self.device)
         
         self.generation_configs = parameter_generator(self.mode, 
@@ -58,9 +60,15 @@ class Lita:
         
         if self.mode == 'vllm':
             return {**repr2dict(self.generation_configs['sampling_params'].__repr__()),
-                    "dtype": self.model.llm_engine.model_config.dtype,
-                    "device": self.model.llm_engine.device_config.device}
+                    "dtype": str(self.model.llm_engine.model_config.dtype),
+                    "device": str(self.model.llm_engine.device_config.device)}
         else:
-            return {**self.generation_configs, 
-                    "dtype":self.model.dtype,
-                    "device":self.model.device}
+            cfg = self.generation_configs.copy()
+            cfg.pop("input_ids", None)
+            cfg.pop("attention_mask", None)
+
+            input_text = self.tokenizer.decode(self.generation_configs['input_ids'][0].detach().cpu().numpy(), skip_special_tokens=True)
+            return {"input_text": input_text,
+                    **cfg, 
+                    "dtype":str(self.model.dtype),
+                    "device":str(self.model.device)}

@@ -55,8 +55,9 @@ def parameter_generator(mode, input_text, seed=7, max_new_tokens=30, top_k=1, te
                 top_k=top_k,
                 max_tokens=max_new_tokens,
                 seed=seed,
-                skip_special_tokens=False,
-                spaces_between_special_tokens=False
+                skip_special_tokens=True,
+                spaces_between_special_tokens=False,
+                ignore_eos=True
             ),
             "use_tqdm": False
         }

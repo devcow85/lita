@@ -1,7 +1,7 @@
 import numpy as np
 from datasets import load_dataset
 
-from lita.benchmark.utils import BenchmarkQAataLoader, mmlu_prompt_generator, mmlupro_prompt_generator
+from lita.benchmark.commons import BenchmarkQAataLoader, mmlu_prompt_generator, mmlupro_prompt_generator
 
 
 class MMLUDataLoader(BenchmarkQAataLoader):
