@@ -33,6 +33,7 @@ Now, Lita will use the specified cache directory.
 ## Usage
 1. Running Models with Different Frameworks
 Lita supports executing models on various frameworks such as vLLM, Hugging Face (HF), and ONNX Runtime (ORT).
+
     ```python
     from lita import Lita
     import time
@@ -47,6 +48,7 @@ Lita supports executing models on various frameworks such as vLLM, Hugging Face 
 
 2. Performance Measurement
 Lita provides built-in performance profiling using vLLM Profiler (vllmprof).
+
     ```python
     from lita import Lita
     import time
@@ -61,3 +63,30 @@ Lita provides built-in performance profiling using vLLM Profiler (vllmprof).
     print(mm.metric.summary())
     ```
     This script runs the model in hf mode while enabling performance profiling with vllmprof. After text generation, it prints the output along with detailed performance metrics.
+
+3. Benchmark Test
+Lita provides built-in benchmarking capabilities for evaluating model performance on standardized datasets. The following script demonstrates running a benchmark using the MMLU dataset.
+
+    ```python
+    from lita import Lita
+    from lita.benchmark.mmlu import MMLUDataLoader
+    from lita.benchmark.commons import run_benchmark, extract_choice
+    from lita.utils import get_system_info
+    import json
+
+    mmlu_ = MMLUDataLoader(n_shots=5)
+
+    model_name = "meta-llama/Llama-3.2-3B-Instruct"
+    model = Lita(model_name, "hf", perf="time")
+            
+    log = run_benchmark(mmlu_, model, 1, extract_fn=extract_choice)
+
+    json_log_data = {
+        "system_info": get_system_info(),
+        "model_info": model.get_configs(),
+        "benchmark_data": log
+    }
+    with open("examples/mmlu_log.json", "w", encoding="utf-8") as f:
+        json.dump(json_log_data, f, indent=4, ensure_ascii=False)
+    ```
+    This script performs an MMLU benchmark test by loading the dataset, running the model using `transformers`, and measuring performance at the simple time. The results, including system specifications and model configuration, are saved in examples/mmlu_log.json for further analysis.
