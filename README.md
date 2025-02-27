@@ -31,7 +31,8 @@ source ~/.bashrc  # or source ~/.bash_profile
 Now, Lita will use the specified cache directory.
 
 ## Usage
-1. Running Models with Different Frameworks
+**1. Running Models with Different Frameworks**
+
 Lita supports executing models on various frameworks such as vLLM, Hugging Face (HF), and ONNX Runtime (ORT).
 
     ```python
@@ -46,7 +47,8 @@ Lita supports executing models on various frameworks such as vLLM, Hugging Face 
         print(f"Generation output: {output_str}")
     ```
 
-2. Performance Measurement
+**2. Performance Measurement**
+
 Lita provides built-in performance profiling using vLLM Profiler (vllmprof).
 
     ```python
@@ -64,7 +66,8 @@ Lita provides built-in performance profiling using vLLM Profiler (vllmprof).
     ```
     This script runs the model in hf mode while enabling performance profiling with vllmprof. After text generation, it prints the output along with detailed performance metrics.
 
-3. Benchmark Test
+**3. Benchmark Test**
+
 Lita provides built-in benchmarking capabilities for evaluating model performance on standardized datasets. The following script demonstrates running a benchmark using the MMLU dataset.
 
     ```python
