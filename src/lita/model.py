@@ -19,6 +19,9 @@ def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda", np
     elif mode =="hf":
         model_ = AutoModelForCausalLM.from_pretrained(model).to(device)
         tokenizer_ = AutoTokenizer.from_pretrained(model)
+        
+        tokenizer_.pad_token = tokenizer_.eos_token
+        
     elif mode =="ort":
         lita_cache = os.environ.get("LITA_CACHE")
         onnx_cahce = os.path.join(lita_cache, 'onnx')
@@ -31,6 +34,9 @@ def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda", np
         
         model_ = ORTModelForCausalLM.from_pretrained(model_path, use_io_binding = True).to(device)
         tokenizer_ = AutoTokenizer.from_pretrained(model_path)
+        
+        tokenizer_.pad_token = tokenizer_.eos_token
+        
     else:
         raise ValueError("Unsupported mode. Choose 'hf', 'onnx', or 'vllm'.")
     

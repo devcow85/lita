@@ -1,5 +1,7 @@
 import re
 from tqdm import tqdm
+import pandas as pd
+import numpy as np
 
 
 def mmlupro_prompt_generator(data, choices, last = True):
@@ -126,7 +128,37 @@ def run_benchmark(dataset, lita_model, max_new_tokens, extract_fn=None):
             }
         log.append(log_dict)
     
+    benchmark_summary(log)
+    
     return log
     
     
-        
+def benchmark_summary(log):
+    df = pd.DataFrame(log)
+    
+    df["correct"] = df.apply(lambda row: row["response"][0] == ["A", "B", "C", "D"][row["answer"]], axis=1)
+
+
+    subject_accuracy = df.groupby("subject")["correct"].mean().reset_index()
+    subject_accuracy.columns = ["subject", "accuracy"]
+    
+    overall_accuracy = df["correct"].mean()
+    total_execution_time = df["e2e"].sum()
+
+    execution_time_stats = df.groupby("subject").agg(
+    mean_e2e=("e2e", np.nanmean),
+    median_e2e=("e2e", np.nanmedian),
+    p50_e2e=("p50", np.nanmean),
+    p99_e2e=("p99", np.nanmean)).reset_index()
+    
+    # 서브젝트별 정확도 및 실행 시간 통계 출력
+    print("### Subject Accuracy ###")
+    print(subject_accuracy)
+
+    print("\n### Execution Time Statistics ###")
+    print(execution_time_stats)
+
+    # 전체 정확도 출력
+    print("\n### Overall Accuracy ###")
+    print(f"Overall Accuracy: {overall_accuracy:.2%}")  
+    print(f"Total Execution Time (e2e): {total_execution_time/1000:.2f} s")

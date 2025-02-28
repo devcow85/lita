@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lita"
-version = "0.0.5"
+version = "0.0.6"
 description = "LLM Integrated Testing & Analysis"
 authors = [{ name = "seokhun.jeon", email = "seokhun.jeon@keti.re.kr" }]
 license = { text = "MIT" }
@@ -21,3 +21,14 @@ dependencies = [
     "accelerate"
 ]
 requires-python = ">=3.10"
+
+[project.classifiers]
+"Development Status :: 4 - Beta"
+"Programming Language :: Python :: 3.10"
+"Operating System :: OS Independent"
+"Intended Audience :: Developers"
+"Topic :: Scientific/Engineering :: Artificial Intelligence"
+"Topic :: Software Development :: Testing"
+
+[project.urls]
+"Homepage" = "https://github.com/devcow85/lita"
