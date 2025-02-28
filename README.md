@@ -12,6 +12,7 @@ Lita is designed to help researchers and developers evaluate and optimize LLM wo
 To set up the development environment, use the following commands:
 ```bash
 pip install -e .
+pip install torch==2.6.0, torchvision
 pip uninstall onnxruntime onnxruntime-gpu
 pip install onnxruntime-gpu==1.19
 ```
