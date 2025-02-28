@@ -17,7 +17,7 @@ dependencies = [
     "transformers",
     "matplotlib",
     "onnx",
-    "onnxruntime-gpu",
+    "onnxruntime-gpu==1.19",
     "accelerate"
 ]
 requires-python = ">=3.10"
