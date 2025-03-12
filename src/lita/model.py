@@ -3,7 +3,7 @@ from optimum.onnxruntime import ORTModelForCausalLM
 from vllm import LLM, SamplingParams
 
 import os
-
+import onnxruntime
 from lita import perf
 
 def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda", nperf=None):
@@ -23,16 +23,19 @@ def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda", np
         tokenizer_.pad_token = tokenizer_.eos_token
         
     elif mode =="ort":
-        lita_cache = os.environ.get("LITA_CACHE")
-        onnx_cahce = os.path.join(lita_cache, 'onnx')
-        model_path = os.path.join(onnx_cahce, model)
+        model_path = os.path.join(os.environ.get("LITA_ORT_CACHE"), model)
         
         if not os.path.exists(model_path):
             ort_model = ORTModelForCausalLM.from_pretrained(model, export=True, use_io_binding = True)
             ort_model.save_pretrained(model_path)
             print(f"Convert {model} to ONNX model and Save to {model_path}")
         
-        model_ = ORTModelForCausalLM.from_pretrained(model_path, use_io_binding = True).to(device)
+        # always on ort profiler
+        sess_options = onnxruntime.SessionOptions()
+        sess_options.enable_profiling = True
+        sess_options.profile_file_prefix = os.path.join(os.environ.get("LITA_PROFILE_DIR"),"lita_ort_uprofile_")
+        
+        model_ = ORTModelForCausalLM.from_pretrained(model_path, use_io_binding = True, session_options=sess_options).to(device)
         tokenizer_ = AutoTokenizer.from_pretrained(model_path)
         
         tokenizer_.pad_token = tokenizer_.eos_token
@@ -48,7 +51,7 @@ def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda", np
         if mode =="vllm":
             model_.llm_engine.step = wrapper(model_.llm_engine.step, metric)
         else:
-            model_.forward = wrapper(model_.forward, metric)
+            model_.forward = wrapper(model_.forward, metric, mode=mode, session=model_.model)
             
     return model_, tokenizer_, metric
     

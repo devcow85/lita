@@ -1,4 +1,11 @@
 # LITA
+
+<p align="center">
+  <img src="https://private-user-images.githubusercontent.com/174192259/417402860-54992b7f-9225-42f6-97a5-e9683ca67389.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDEyMzY5MzAsIm5iZiI6MTc0MTIzNjYzMCwicGF0aCI6Ii8xNzQxOTIyNTkvNDE3NDAyODYwLTU0OTkyYjdmLTkyMjUtNDJmNi05N2E1LWU5NjgzY2E2NzM4OS5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMzA2JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDMwNlQwNDUwMzBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT01NDA0YTlmOTJmMTQzNjFkNzA1NzAxMTZmMDBhNTUwNzRlN2MyM2EwNDA1MzViYmUzNDE0ZTM2ZDQ3MmQ5NzU5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.YB26nGaa2LhPM1hMYNsyo9KxZKwcRiJuWjXA1SSS5dI"
+  alt="Logo"
+  style="width: 33vw; border-radius: 15px;">
+</p>
+
 ### LLM Integrated Testing &amp; Analysis Framework
 Lita is a **comprehensive testing and analysis framework for Large Language Models (LLMs)**, designed to provide an integrated environment for efficient execution, benchmarking, and profiling.
 

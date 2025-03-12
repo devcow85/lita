@@ -2,7 +2,8 @@ from functools import wraps
 import time
 
 import numpy as np
-from vllm.profiler import layerwise_profile
+from lita.profiler import UniversialProfiler
+
 
 class PerfMetric:
     time_factors = {"s": 1,
@@ -60,8 +61,7 @@ class PerfMetric:
     def reset(self):
         self.latency = []
 
-
-def perf_time(func, metric):
+def perf_time(func, metric, **kwargs):
     @wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()
@@ -72,12 +72,23 @@ def perf_time(func, metric):
         return result
     return wrapper
 
-def perf_vllmprof(func, metric):
+# def perf_vllmprof(func, metric, **kwargs):
+#     @wraps(func)
+#     def wrapper(*args, **kwargs):
+#         with layerwise_profile() as prof:
+#             result = func(*args, **kwargs)
+    
+#         metric(prof.profiler.self_cpu_time_total/1e3)    # ms    
+#         return result
+#     return wrapper
+
+def perf_up(func, metric, **kwargs):
+    mode = kwargs.get("mode",None)
+    session = kwargs.get("session",None)
+    
     @wraps(func)
     def wrapper(*args, **kwargs):
-        with layerwise_profile() as prof:
+        with UniversialProfiler(mode, session=session) as prof:
             result = func(*args, **kwargs)
-    
-        metric(prof.profiler.self_cpu_time_total/1e3)    # ms    
         return result
     return wrapper
