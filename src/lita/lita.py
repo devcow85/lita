@@ -42,6 +42,10 @@ class Lita:
     def generate(self, input_text, max_new_tokens=30, top_k=1, temperature=1.0):
         if self.metric is not None:
             self.metric.reset()
+        
+        if isinstance(input_text, str):
+            input_text = [input_text, ]
+            
         inputs = input_text if self.mode=="vllm" else self.tokenizer.batch_encode_plus(input_text, return_tensors="pt", padding="longest", truncation=True).to(self.device)
         
         self.generation_configs = parameter_generator(self.mode, 

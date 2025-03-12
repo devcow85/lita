@@ -30,10 +30,11 @@ def load_model(mode, model, dtype, max_model_len=4096, seed=7, device="cuda", np
             ort_model.save_pretrained(model_path)
             print(f"Convert {model} to ONNX model and Save to {model_path}")
         
-        # always on ort profiler
         sess_options = onnxruntime.SessionOptions()
-        sess_options.enable_profiling = True
-        sess_options.profile_file_prefix = os.path.join(os.environ.get("LITA_PROFILE_DIR"),"lita_ort_uprofile_")
+        sess_options.log_severity_level = 3
+        if nperf is not None:
+            sess_options.enable_profiling = True
+            sess_options.profile_file_prefix = os.path.join(os.environ.get("LITA_PROFILE_DIR"),"lita_ort_uprofile_")
         
         model_ = ORTModelForCausalLM.from_pretrained(model_path, use_io_binding = True, session_options=sess_options).to(device)
         tokenizer_ = AutoTokenizer.from_pretrained(model_path)
